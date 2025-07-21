@@ -1,3 +1,4 @@
+import { Gesture } from '@/components/gesture';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
@@ -21,7 +22,6 @@ import { useDialogs, useNotifications } from '@toolpad/core';
 import { matchIsValidColor, MuiColorInput } from 'mui-color-input';
 import React, { useState } from 'react';
 
-import { Gesture } from '@/components/gesture';
 import { VisuallyHiddenInput } from '@/components/visually-hidden-input';
 import { useSettings } from '@/stores/settings-store';
 
@@ -35,9 +35,7 @@ function SettingsPage() {
     newTabLinkRight,
     stroke,
     strokeWidth,
-    contextOnLink,
     closeLastBlock,
-    selectToLink,
     blacklists,
     holdButton,
     gestures,
@@ -47,9 +45,7 @@ function SettingsPage() {
     setNewTabLinkRight,
     setStroke,
     setStrokeWidth,
-    setContextOnLink,
     setCloseLastBlock,
-    setSelectToLink,
     addBlacklist,
     removeBlacklist,
     setHoldButton,
@@ -86,9 +82,7 @@ function SettingsPage() {
         newTabLinkRight,
         stroke,
         strokeWidth,
-        contextOnLink,
         closeLastBlock,
-        selectToLink,
         blacklists,
         holdButton,
         gestures,
@@ -147,16 +141,10 @@ function SettingsPage() {
       <title>{title}</title>
       <List sx={{ width: '100%' }}>
         <ListItem>
-          <ListItemText
-            primary={i18n.t('settings_newTabUrl')}
-            secondary={i18n.t('settings_newTabUrl_description')}
-          />
+          <ListItemText primary={i18n.t('settings_newTabUrl')} secondary={i18n.t('settings_newTabUrl_description')} />
         </ListItem>
         <ListItem sx={{ pl: 7 }}>
-          <RadioGroup
-            value={newTabUrlRadio}
-            onChange={(_, value) => handleNewTabUrlRadioChange(value)}
-          >
+          <RadioGroup value={newTabUrlRadio} onChange={(_, value) => handleNewTabUrlRadioChange(value)}>
             <FormControlLabel value="chrome://newtab/" control={<Radio />} label="New Tab page" />
             <FormControlLabel value="homepage" control={<Radio />} label="Home page" />
             <FormControlLabel
@@ -193,18 +181,11 @@ function SettingsPage() {
             primary={i18n.t('settings_newTabLinkRight')}
             secondary={i18n.t('settings_newTabLinkRight_description')}
           />
-          <Switch
-            edge="end"
-            checked={newTabLinkRight}
-            onChange={() => setNewTabLinkRight(!newTabLinkRight)}
-          />
+          <Switch edge="end" checked={newTabLinkRight} onChange={() => setNewTabLinkRight(!newTabLinkRight)} />
         </ListItem>
         <Divider component="li" />
         <ListItem>
-          <ListItemText
-            primary="Trail Properties"
-            secondary="Adjust the color and width of the line drawn"
-          />
+          <ListItemText primary="Trail Properties" secondary="Adjust the color and width of the line drawn" />
         </ListItem>
         <ListItem disablePadding sx={{ pl: 2 }}>
           <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
@@ -212,10 +193,7 @@ function SettingsPage() {
             <List disablePadding sx={{ flex: '1 1 auto' }}>
               <ListItem>
                 <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
-                  <ListItemText
-                    primary={i18n.t('settings_stroke')}
-                    secondary={i18n.t('settings_stroke_description')}
-                  />
+                  <ListItemText primary={i18n.t('settings_stroke')} secondary={i18n.t('settings_stroke_description')} />
                   <MuiColorInput
                     value={stroke}
                     onChange={(color) => {
@@ -239,9 +217,7 @@ function SettingsPage() {
                     min={1}
                     max={4}
                     sx={{ width: 300 }}
-                    onChange={(_, value: number | number[]) =>
-                      setStrokeWidth(Array.isArray(value) ? value[0] : value)
-                    }
+                    onChange={(_, value: number | number[]) => setStrokeWidth(Array.isArray(value) ? value[0] : value)}
                   />
                 </Stack>
               </ListItem>
@@ -251,46 +227,15 @@ function SettingsPage() {
         <Divider component="li" />
         <ListItem>
           <ListItemText
-            primary={i18n.t('settings_contextOnLink')}
-            secondary={i18n.t('settings_contextOnLink_description')}
-          />
-          <Switch
-            edge="end"
-            checked={contextOnLink}
-            onChange={() => setContextOnLink(!contextOnLink)}
-          />
-        </ListItem>
-        <Divider component="li" />
-        <ListItem>
-          <ListItemText
             primary={i18n.t('settings_closeLastBlock')}
             secondary={i18n.t('settings_closeLastBlock_description')}
           />
-          <Switch
-            edge="end"
-            checked={closeLastBlock}
-            onChange={() => setCloseLastBlock(!closeLastBlock)}
-          />
-        </ListItem>
-        <Divider component="li" />
-        <ListItem>
-          <ListItemText
-            primary={i18n.t('settings_selectToLink')}
-            secondary={i18n.t('settings_selectToLink_description')}
-          />
-          <Switch
-            edge="end"
-            checked={selectToLink}
-            onChange={() => setSelectToLink(!selectToLink)}
-          />
+          <Switch edge="end" checked={closeLastBlock} onChange={() => setCloseLastBlock(!closeLastBlock)} />
         </ListItem>
         <Divider component="li" />
         <ListItem>
           <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
-            <ListItemText
-              primary={i18n.t('settings_blacklist')}
-              secondary={i18n.t('settings_blacklist_description')}
-            />
+            <ListItemText primary={i18n.t('settings_blacklist')} secondary={i18n.t('settings_blacklist_description')} />
             <Button
               variant="outlined"
               onClick={async () => {
@@ -334,10 +279,7 @@ function SettingsPage() {
               primary={i18n.t('settings_holdButton')}
               secondary={i18n.t('settings_holdButton_description')}
             />
-            <Select
-              value={holdButton}
-              onChange={(event) => setHoldButton(Number(event.target.value))}
-            >
+            <Select value={holdButton} onChange={(event) => setHoldButton(Number(event.target.value))}>
               <MenuItem value={0}>{i18n.t('settings_button_left')}</MenuItem>
               <MenuItem value={1}>{i18n.t('settings_button_middle')}</MenuItem>
               <MenuItem value={2}>{i18n.t('settings_button_right')}</MenuItem>
@@ -347,10 +289,7 @@ function SettingsPage() {
         <Divider component="li" />
         <ListItem>
           <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
-            <ListItemText
-              primary={i18n.t('settings_reset')}
-              secondary={i18n.t('settings_reset_description')}
-            />
+            <ListItemText primary={i18n.t('settings_reset')} secondary={i18n.t('settings_reset_description')} />
             <Button
               variant="outlined"
               onClick={async () => {
@@ -370,10 +309,7 @@ function SettingsPage() {
         <Divider component="li" />
         <ListItem>
           <Stack direction="row" spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
-            <ListItemText
-              primary={i18n.t('settings_import')}
-              secondary={i18n.t('settings_import_description')}
-            />
+            <ListItemText primary={i18n.t('settings_import')} secondary={i18n.t('settings_import_description')} />
             <ButtonGroup sx={{ whiteSpace: 'nowrap' }}>
               <Button onClick={handleExportClick}>{i18n.t('settings_button_export')}</Button>
               <Button component="label">

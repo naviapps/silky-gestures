@@ -32,12 +32,10 @@ const n = () => {
     'gestures',
     'customactions',
     'blacklist',
-    'contextOnLink',
     'holdButton',
     'newTabLinkRight',
     'newTabRight',
     'newTabUrl',
-    'selectToLink',
     'stroke',
     'strokeWidth',
   ]);
@@ -267,9 +265,7 @@ var d = {
         } else if (backgroundPage.categories[categoryKey].customActions) {
           $('#chooseaction').append($('<option>').text('Custom Actions').prop('disabled', true));
           for (const s in settings.customactions) {
-            $('#chooseaction').append(
-              $('<option>').text(`- ${settings.customactions[s].title}`).val(s),
-            );
+            $('#chooseaction').append($('<option>').text(`- ${settings.customactions[s].title}`).val(s));
           }
         }
     });
@@ -316,9 +312,7 @@ var d = {
         t = i18n.t('options_button_addgesture');
         $('#gestureoverwrite').css({ display: 'none' });
       }
-      t = settings.gestures[s]
-        ? i18n.t('options_button_overwrite')
-        : i18n.t('options_button_addgesture');
+      t = settings.gestures[s] ? i18n.t('options_button_overwrite') : i18n.t('options_button_addgesture');
       if (d.action) {
         $('#doaddgesture').css({ display: 'block' }).text(t);
         $('#chooseaction').css({ display: 'none' });
@@ -347,21 +341,14 @@ var d = {
       $('#canvastitle').text(
         i18n.t(
           'options_addgesture_title',
-          i18n.t(`action_${e}`) ||
-            (settings.customactions[e] ? settings.customactions[e].title : ''),
+          i18n.t(`action_${e}`) || (settings.customactions[e] ? settings.customactions[e].title : ''),
         ),
       );
       $('#canvasdescrip li:nth-child(1)').text(
-        i18n.t(
-          'options_addgesture_instruct_2',
-          i18n.t(`options_mousebutton_${settings.holdButton}`),
-        ),
+        i18n.t('options_addgesture_instruct_2', i18n.t(`options_mousebutton_${settings.holdButton}`)),
       );
       $('#canvasdescrip li:nth-child(2)').text(
-        i18n.t(
-          'options_addgesture_instruct_3',
-          i18n.t(`options_mousebutton_${settings.holdButton}`),
-        ),
+        i18n.t('options_addgesture_instruct_3', i18n.t(`options_mousebutton_${settings.holdButton}`)),
       );
       $('#drawingcanvas').css({ display: 'block' });
       $('#canvasdescrip').css({ display: 'table' });
@@ -372,9 +359,7 @@ var d = {
 };
 
 const p = (e) => {
-  $(
-    `.gesture[gesture=${e.replaceAll(':', String.raw`\:`).replaceAll('+', String.raw`\+`)}]`,
-  ).remove();
+  $(`.gesture[gesture=${e.replaceAll(':', String.raw`\:`).replaceAll('+', String.raw`\+`)}]`).remove();
   delete settings.gestures[e];
   index({ gestures: settings.gestures });
   hGesture();
@@ -440,10 +425,6 @@ const g = [
       'zoomZero',
       'openImage',
       'saveImage',
-      'hideImage',
-      'zoomImgIn',
-      'zoomImgOut',
-      'zoomImgZero',
       'findPrevious',
       'findNext',
       'copy',
@@ -485,12 +466,7 @@ const m = () => {
             .attr('action', o)
             .attr('sectionindex', s)
             .append('<div class=gestures>')
-            .append(
-              $("<div class='button gray addactiongesture' tabindex=0>+</div>").on(
-                'click',
-                d.open.bind(null, o),
-              ),
-            )
+            .append($("<div class='button gray addactiongesture' tabindex=0>+</div>").on('click', d.open.bind(null, o)))
             .append(
               a
                 ? $('<img class=context>').attr(
@@ -515,25 +491,10 @@ const m = () => {
         $('<div class=action>')
           .attr('action', o)
           .attr('sectionindex', t)
-          .append(
-            $("<div class='button gray delcustomaction' tabindex=0>&times;</div>").on(
-              'click',
-              r.bind(null, o),
-            ),
-          )
-          .append(
-            $("<div class='button gray editcustomaction' tabindex=0>edit</div>").on(
-              'click',
-              u.bind(null, o),
-            ),
-          )
+          .append($("<div class='button gray delcustomaction' tabindex=0>&times;</div>").on('click', r.bind(null, o)))
+          .append($("<div class='button gray editcustomaction' tabindex=0>edit</div>").on('click', u.bind(null, o)))
           .append('<div class=gestures>')
-          .append(
-            $("<div class='button gray addactiongesture' tabindex=0>+</div>").on(
-              'click',
-              d.open.bind(null, o),
-            ),
-          )
+          .append($("<div class='button gray addactiongesture' tabindex=0>+</div>").on('click', d.open.bind(null, o)))
           .append(
             a
               ? $('<img class=context alt="">').attr(
@@ -564,12 +525,7 @@ const e = (e) => {
   $('.gestures', n).append(
     $('<div class=gesture>')
       .attr('gesture', e)
-      .append(
-        $("<div class='button gray removegesture' tabindex=0>&times;</div>").on(
-          'click',
-          p.bind(null, e),
-        ),
-      )
+      .append($("<div class='button gray removegesture' tabindex=0>&times;</div>").on('click', p.bind(null, e)))
       .append(drawGesture(e, 100, 100)),
   );
   if (n.parent().hasClass('disabled')) {

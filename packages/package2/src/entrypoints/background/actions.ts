@@ -1,13 +1,11 @@
+import { ImageMessage, LinkMessage } from '@/types/gesture';
 import { delay } from 'es-toolkit';
 
 import { GestureMessage } from '@/entrypoints/background/messaging';
 import { sendMessage } from '@/entrypoints/content/messaging';
 import { settingsStore } from '@/stores/settings-store';
-import { ImageMessage, LinkMessage } from '@/types/gesture';
 
-const ZOOM_FACTORS = [
-  0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5,
-];
+const ZOOM_FACTORS = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5];
 
 export const newTab = async (tab: Browser.tabs.Tab): Promise<void> => {
   if (!tab?.id || !tab.windowId) {
@@ -66,10 +64,7 @@ export const navigateTab = async (tab: Browser.tabs.Tab): Promise<void> => {
     return;
   }
   await browser.tabs.update(tab.id, {
-    url:
-      settingsStore.getState().newTabUrl === 'homepage'
-        ? undefined
-        : settingsStore.getState().newTabUrl,
+    url: settingsStore.getState().newTabUrl === 'homepage' ? undefined : settingsStore.getState().newTabUrl,
   });
 };
 
@@ -81,10 +76,7 @@ export const closeTab = async (tab: Browser.tabs.Tab): Promise<void> => {
     const wins = await browser.windows.getAll({ populate: true });
     if (wins.length === 1 && wins[0].tabs && wins[0].tabs.length === 1) {
       await browser.tabs.update(tab.id, {
-        url:
-          settingsStore.getState().newTabUrl === 'homepage'
-            ? undefined
-            : settingsStore.getState().newTabUrl,
+        url: settingsStore.getState().newTabUrl === 'homepage' ? undefined : settingsStore.getState().newTabUrl,
       });
       return;
     }
@@ -258,10 +250,7 @@ export const pageForward = async (tab: Browser.tabs.Tab): Promise<void> => {
 
 export const newWindow = async (): Promise<void> => {
   await browser.windows.create({
-    url:
-      settingsStore.getState().newTabUrl === 'homepage'
-        ? undefined
-        : settingsStore.getState().newTabUrl,
+    url: settingsStore.getState().newTabUrl === 'homepage' ? undefined : settingsStore.getState().newTabUrl,
   });
 };
 
@@ -454,9 +443,7 @@ export const zoomIn = async (tab: Browser.tabs.Tab): Promise<void> => {
     return;
   }
   const currentZoomFactor = await browser.tabs.getZoom(tab.id);
-  const nextZoomFactor = [...ZOOM_FACTORS].find(
-    (zoomFactor) => currentZoomFactor + Number.EPSILON < zoomFactor,
-  );
+  const nextZoomFactor = [...ZOOM_FACTORS].find((zoomFactor) => currentZoomFactor + Number.EPSILON < zoomFactor);
   if (!nextZoomFactor) {
     return;
   }
@@ -482,27 +469,6 @@ export const zoomZero = async (tab: Browser.tabs.Tab): Promise<void> => {
     return;
   }
   await browser.tabs.setZoom(tab.id, 0);
-};
-
-export const zoomImgIn = async (tab: Browser.tabs.Tab, images: ImageMessage[]): Promise<void> => {
-  if (!tab?.id || images.length === 0) {
-    return;
-  }
-  await sendMessage('zoomImgIn', images, tab.id);
-};
-
-export const zoomImgOut = async (tab: Browser.tabs.Tab, images: ImageMessage[]): Promise<void> => {
-  if (!tab?.id || images.length === 0) {
-    return;
-  }
-  await sendMessage('zoomImgOut', images, tab.id);
-};
-
-export const zoomImgZero = async (tab: Browser.tabs.Tab, images: ImageMessage[]): Promise<void> => {
-  if (!tab?.id || images.length === 0) {
-    return;
-  }
-  await sendMessage('zoomImgZero', images, tab.id);
 };
 
 export const tabToLeft = async (tab: Browser.tabs.Tab): Promise<void> => {
@@ -593,13 +559,6 @@ export const saveImage = async (images: ImageMessage[]): Promise<void> => {
   }
 };
 
-export const hideImage = async (tab: Browser.tabs.Tab, images: ImageMessage[]): Promise<void> => {
-  if (!tab?.id || images.length === 0) {
-    return;
-  }
-  await sendMessage('hideImage', images, tab.id);
-};
-
 export const showCookies = async (tab: Browser.tabs.Tab): Promise<void> => {
   if (!tab?.id) {
     return;
@@ -659,20 +618,6 @@ export const copyLink = async (tab: Browser.tabs.Tab, links: LinkMessage[]): Pro
     return;
   }
   await sendMessage('copyLink', links, tab.id);
-};
-
-export const findPrevious = async (tab: Browser.tabs.Tab, selection?: string) => {
-  if (!tab?.id || !selection) {
-    return;
-  }
-  await sendMessage('findPrevious', selection, tab.id);
-};
-
-export const findNext = async (tab: Browser.tabs.Tab, selection?: string) => {
-  if (!tab?.id || !selection) {
-    return;
-  }
-  await sendMessage('findNext', selection, tab.id);
 };
 
 export const toggleBookmark = async (tab: Browser.tabs.Tab): Promise<void> => {
@@ -751,9 +696,6 @@ const createActions = (tab: Browser.tabs.Tab, { links, images, selection }: Gest
   zoomIn: () => zoomIn(tab),
   zoomOut: () => zoomOut(tab),
   zoomZero: () => zoomZero(tab),
-  zoomImgIn: () => zoomImgIn(tab, images),
-  zoomImgOut: () => zoomImgOut(tab, images),
-  zoomImgZero: () => zoomImgZero(tab, images),
   tabToLeft: () => tabToLeft(tab),
   tabToRight: () => tabToRight(tab),
   parentDirectory: () => parentDirectory(tab),
@@ -763,7 +705,6 @@ const createActions = (tab: Browser.tabs.Tab, { links, images, selection }: Gest
   openBookmarks: () => openBookmarks(tab),
   openImage: () => openImage(tab, images),
   saveImage: () => saveImage(images),
-  hideImage: () => hideImage(tab, images),
   showCookies: () => showCookies(tab),
   searchSel: () => searchSel(tab, selection),
   print: () => print(tab),
@@ -772,8 +713,6 @@ const createActions = (tab: Browser.tabs.Tab, { links, images, selection }: Gest
   unpin: () => unpin(tab),
   copy: () => copy(tab, selection),
   copyLink: () => copyLink(tab, links),
-  findPrevious: () => findPrevious(tab, selection),
-  findNext: () => findNext(tab, selection),
   toggleBookmark: () => toggleBookmark(tab),
   bookmark: () => bookmark(tab),
   unbookmark: () => unbookmark(tab),

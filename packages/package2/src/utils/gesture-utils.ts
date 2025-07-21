@@ -1,14 +1,6 @@
-import {
-  ValidGestures,
-  RockerDirection,
-  WheelDirection,
-} from '@/types/gesture';
+import { ValidGestures, RockerDirection, WheelDirection } from '@/types/gesture';
 
-import {
-  isLineDirection,
-  isRockerDirection,
-  isWheelDirection,
-} from '@/utilities';
+import { isLineDirection, isRockerDirection, isWheelDirection } from '@/utilities';
 
 //
 

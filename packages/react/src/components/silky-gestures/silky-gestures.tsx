@@ -2,9 +2,7 @@ import Konva from 'konva';
 import React, { useRef } from 'react';
 import { Layer, Shape, Stage } from 'react-konva';
 
-export type SilkyGesturesProps = React.ComponentPropsWithoutRef<
-  typeof Stage
-> & {
+export type SilkyGesturesProps = React.ComponentPropsWithoutRef<typeof Stage> & {
   width?: number;
   height?: number;
 };

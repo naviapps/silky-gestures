@@ -1,6 +1,6 @@
+import { SilkyGestures } from '@/components/silky-gestures';
 import { useEffect, useRef } from 'react';
 
-import { SilkyGestures, SilkyGesturesHandle } from '@/components/silky-gestures';
 import * as actions from '@/entrypoints/content/actions';
 import { onMessage, removeAllListeners } from '@/entrypoints/content/messaging';
 import { useSettings } from '@/stores/settings-store';
@@ -18,19 +18,10 @@ function App() {
     onMessage('pageDown', actions.pageDown);
     onMessage('pageNext', actions.pageNext);
     onMessage('pagePrevious', actions.pagePrevious);
-    onMessage('zoomImgIn', ({ data }) => actions.zoomImgIn(data));
-    onMessage('zoomImgOut', ({ data }) => actions.zoomImgOut(data));
-    onMessage('zoomImgZero', ({ data }) => actions.zoomImgZero(data));
-    onMessage('hideImage', ({ data }) => actions.hideImage(data));
     onMessage('showCookies', actions.showCookies);
     onMessage('print', actions.print);
     onMessage('copy', ({ data }) => actions.copy(data));
     onMessage('copyLink', ({ data }) => actions.copyLink(data));
-    onMessage('findPrevious', ({ data }) => actions.findPrevious(data));
-    onMessage('findNext', ({ data }) => actions.findNext(data));
-    onMessage('windowBlurred', () => {
-      silkyGesturesRef.current?.gestureEnd();
-    });
 
     return () => {
       removeAllListeners();

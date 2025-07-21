@@ -22,7 +22,6 @@ export type Actions = {
 };
 
 type Message = {
-  startPoint?: unknown;
   links?: [
     {
       src?: string;
@@ -133,7 +132,9 @@ export const createActions = (
         },
       });
       setTimeout(async () => {
-        const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, { format: 'png' });
+        const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, {
+          format: 'png',
+        });
         img.src = dataUrl;
       }, 80);
     };

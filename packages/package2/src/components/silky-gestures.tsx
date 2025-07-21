@@ -5,14 +5,9 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import { Label, Layer, Shape, Stage, Tag, Text } from 'react-konva';
 
 import { onMessage, removeAllListeners } from '@/entrypoints/content/messaging';
-import {
-  buildValidGestures,
-  determineLineDirection,
-} from '@/utils/gesture-utils';
+import { buildValidGestures, determineLineDirection } from '@/utils/gesture-utils';
 
-export type SilkyGesturesProps = React.ComponentPropsWithoutRef<
-  typeof Stage
-> & {
+export type SilkyGesturesProps = React.ComponentPropsWithoutRef<typeof Stage> & {
   gestures: string[];
   width?: number;
   height?: number;
@@ -32,12 +27,9 @@ export function SilkyGestures({
 }: SilkyGesturesProps) {
   const shapeRef = useRef<Konva.Shape>(null);
 
-  const validGestures = useMemo<ValidGestures>(
-    () => buildValidGestures(gestures),
-    [gestures],
-  );
+  const validGestures = useMemo<ValidGestures>(() => buildValidGestures(gestures), [gestures]);
 
-  const { isOpen, gestureRef, handleChain, handleSyncButton } = useGestures({
+  const { isOpen, gestureRef } = useGestures({
     validGestures,
     onRefreshLine: () => {
       shapeRef.current?.getLayer()?.batchDraw();
@@ -53,10 +45,7 @@ export function SilkyGestures({
   /*
    * Helpers
    */
-  const renderGesturePath = (
-    context: Konva.Context,
-    shape: Konva.Shape,
-  ): void => {
+  const renderGesturePath = (context: Konva.Context, shape: Konva.Shape): void => {
     if (!gestureRef.current.line) return;
 
     const line = gestureRef.current.line;
@@ -154,12 +143,6 @@ export function SilkyGestures({
     /*
      * Extension Communication
      */
-    onMessage('chain', ({ data }) => {
-      handleChain(data);
-    });
-    onMessage('syncButton', ({ data }) => {
-      handleSyncButton(data);
-    });
 
     return () => {
       removeAllListeners();

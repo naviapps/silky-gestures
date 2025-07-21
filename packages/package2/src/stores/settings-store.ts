@@ -69,13 +69,9 @@ export const SettingsStateSchema = z.object({
   specificPage: z.string().url().optional(),
   newTabPosition: z.nativeEnum(NewTabPosition).default(NewTabPosition.AfterRelatedTabs),
   newTabFromLinkOpensInBackground: z.boolean().default(false),
-  duplicateTabPosition: z
-    .nativeEnum(DuplicatedTabPosition)
-    .default(DuplicatedTabPosition.NextToOriginalTab),
+  duplicateTabPosition: z.nativeEnum(DuplicatedTabPosition).default(DuplicatedTabPosition.NextToOriginalTab),
   alwaysActivateRelatedTab: z.boolean().default(true),
-  closeTabActivation: z
-    .nativeEnum(CloseTabActivation)
-    .default(CloseTabActivation.ActivateInRecentlyUsedOrder),
+  closeTabActivation: z.nativeEnum(CloseTabActivation).default(CloseTabActivation.ActivateInRecentlyUsedOrder),
   keepWindowOpenWhenLastTabIsClosed: z.boolean().default(false),
   focusPageContentOnNewTab: z.boolean().default(false),
   // Mouse

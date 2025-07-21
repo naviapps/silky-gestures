@@ -92,9 +92,7 @@ l.init = () => {
   r.sync.customactions = true;
   if (!settings.installed) {
     settings.installed = Date.now();
-    settings.id =
-      Math.floor(Math.random() * 2 ** 30).toString(32) +
-      Math.floor(Math.random() * 2 ** 30).toString(32);
+    settings.id = Math.floor(Math.random() * 2 ** 30).toString(32) + Math.floor(Math.random() * 2 ** 30).toString(32);
     settings.gestures = JSON.parse(defaults.gestures);
     const e = JSON.parse(defaults.settings);
     for (key in e) {
@@ -128,8 +126,7 @@ l.init = () => {
   settings.version = chrome.runtime.getManifest().version;
   settings.started = Date.now();
   settings.session =
-    Math.floor(Math.random() * 2 ** 30).toString(32) +
-    Math.floor(Math.random() * 2 ** 30).toString(32);
+    Math.floor(Math.random() * 2 ** 30).toString(32) + Math.floor(Math.random() * 2 ** 30).toString(32);
   if (settings.forceInstallRightclick) {
     const t = screen.availHeight / 2 - 320 / 1.5;
     const n = screen.availWidth / 2 - 375;
@@ -153,7 +150,6 @@ const contents = {};
 const states = { active: null, prevActive: null, closed: [], tab: {} };
 const focusWindows = {};
 const w = null;
-let chainGesture = null;
 const o = null;
 const v = Date.now() / 1000 > 1_745_208e3;
 
@@ -163,14 +159,12 @@ const v = Date.now() / 1000 > 1_745_208e3;
 const defaults = {
   settings: {
     holdButton: 2,
-    contextOnLink: false,
     newTabUrl: 'chrome://newtab/',
     newTabRight: false,
     newTabLinkRight: true,
     stroke: { r: 255, g: 0, b: 0, a: 1 },
     strokeWidth: 2,
     blacklists: [],
-    selectToLink: true,
   },
   gestures: {
     U: 'newTab',
@@ -257,10 +251,6 @@ const categories = {
       'zoomZero',
       'openImage',
       'saveImage',
-      'hideImage',
-      'zoomImgIn',
-      'zoomImgOut',
-      'zoomImgZero',
       'findPrevious',
       'findNext',
       'copy',
@@ -299,12 +289,8 @@ const contexts = {
   newTabBack: 'l',
   newWindowLink: 'l',
   copyLink: 'l',
-  zoomImgIn: 'i',
-  zoomImgOut: 'i',
-  zoomImgZero: 'i',
   openImage: 'i',
   saveImage: 'i',
-  hideImage: 'i',
   searchSel: 's',
   copy: 's',
   findPrevious: 's',
@@ -345,56 +331,9 @@ const handleMessage = function (id, data) {
 
   if (data.gesture && settings.gestures[data.gesture]) {
     const e = settings.gestures[data.gesture];
-    if (chainGesture) {
-      clearTimeout(chainGesture.timeout);
-    }
-    chainGesture = null;
-    if (data.gesture[0] === 'r') {
-      chainGesture = {
-        rocker: true,
-        timeout: globalThis.setTimeout(() => {
-          chainGesture = null;
-        }, 2000),
-      };
-    }
-
-    if (data.gesture[0] === 'w') {
-      chainGesture = {
-        wheel: true,
-        timeout: globalThis.setTimeout(() => {
-          chainGesture = null;
-        }, 2000),
-      };
-    }
-
-    if (chainGesture && data.buttonDown) {
-      chainGesture.buttonDown = data.buttonDown;
-    }
-
-    if (chainGesture && data.startPoint) {
-      chainGesture.startPoint = data.startPoint;
-    }
-
-    const call = chainGesture
-      ? async () => {
-          if (!chainGesture) {
-            return;
-          }
-          const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-          if (tabs.length === 0) {
-            return;
-          }
-          chainGesture.tabId = tabs[0].id;
-          for (id in contents) {
-            if (tabs[0].id === contents[id].detail.tabId) {
-              contents[id].postMessage({ chain: chainGesture });
-            }
-          }
-        }
-      : () => {};
 
     try {
-      const actions = createActions(id, call, data, settings);
+      const actions = createActions(id, data, settings);
       if (actions[e]) {
         actions[e]();
       } else if (settings.externalactions[e.slice(0, 32)]) {
@@ -448,14 +387,6 @@ const initConnectTab = (port) => {
     delete contents[id];
   });
   const o = { enable: true };
-  if (chainGesture && chainGesture.tabId === tab.id) {
-    if (tab.active) {
-      o.chain = chainGesture;
-    } else {
-      clearTimeout(chainGesture.timeout);
-      chainGesture = null;
-    }
-  }
   let index = tab.url.slice(tab.url.indexOf('//') + 2);
   index = index.slice(0, Math.max(0, index.indexOf('/'))).toLowerCase();
   for (let a = 0; settings.blacklist && a < settings.blacklist.length; a += 1) {
@@ -491,18 +422,14 @@ const O = (e, t, n, o) => {
         .join(',')})`;
     }
     t = `(function(){if(window.SG && window.SG.isId("${e}")){return ${t}}})()`;
-    chrome.tabs.executeScript(
-      contents[e].sender.tab.id,
-      { code: t, allFrames: true, matchAboutBlank: true },
-      (e) => {
-        for (const element of e) {
-          if (element !== null) return void o(element);
-        }
-        if (o) {
-          o();
-        }
-      },
-    );
+    chrome.tabs.executeScript(contents[e].sender.tab.id, { code: t, allFrames: true, matchAboutBlank: true }, (e) => {
+      for (const element of e) {
+        if (element !== null) return void o(element);
+      }
+      if (o) {
+        o();
+      }
+    });
   }
 };
 
@@ -675,9 +602,7 @@ const getTabStatus = (tabId, callback) => {
     chrome.tabs.get(tabId, (tab) => {
       if (
         tab &&
-        /^(chrome:\/\/|chrome-extension:\/\/|https:\/\/chrome\.google\.com|file:\/\/|[^:\/]+:[^:\/]+)/.test(
-          tab.url,
-        )
+        /^(chrome:\/\/|chrome-extension:\/\/|https:\/\/chrome\.google\.com|file:\/\/|[^:\/]+:[^:\/]+)/.test(tab.url)
       ) {
         callback('unable'); // fix for "no tab with id:"
       } else {
@@ -796,11 +721,7 @@ const connectExistingTabs = () => {
             history: [tab.url],
             titles: [tab.title],
           };
-          if (
-            !/(^chrome(|-devtools|-extension):\/\/)|(:\/\/chrome.google.com\/)|(^view-source:)/.test(
-              tab.url,
-            )
-          ) {
+          if (!/(^chrome(|-devtools|-extension):\/\/)|(:\/\/chrome.google.com\/)|(^view-source:)/.test(tab.url)) {
             chrome.tabs.executeScript(tab.id, {
               allFrames: true,
               matchAboutBlank: true,
@@ -832,8 +753,7 @@ const initialize = () => {
   }
   for (id in settings.externalactions) {
     for (i = 0; i < settings.externalactions[id].actions.length; i += 1) {
-      contexts[`${id}-${settings.externalactions[id].actions[i].id}`] =
-        settings.externalactions[id].actions[i].context;
+      contexts[`${id}-${settings.externalactions[id].actions[i].id}`] = settings.externalactions[id].actions[i].context;
     }
   }
   ((e, t) => {
@@ -846,7 +766,10 @@ const initialize = () => {
     }
     return e.length > t.length;
   })(chrome.runtime.getManifest().version, settings.version) &&
-    updateSettings({ version: chrome.runtime.getManifest().version, updated: Date.now() });
+    updateSettings({
+      version: chrome.runtime.getManifest().version,
+      updated: Date.now(),
+    });
   for (id in settings.externalactions) {
     delete settings.externalactions[id];
   }
@@ -866,8 +789,5 @@ globalThis.contexts = contexts;
 globalThis.getTabStatus = getTabStatus;
 globalThis.connectNative = connectNative;
 globalThis.isNative = () => {
-  return (
-    !!nativePort &&
-    (nativePort.version ? { loaded: true, version: nativePort.version } : { loaded: false })
-  );
+  return !!nativePort && (nativePort.version ? { loaded: true, version: nativePort.version } : { loaded: false });
 };

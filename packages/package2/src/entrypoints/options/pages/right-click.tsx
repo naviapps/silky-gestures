@@ -10,8 +10,8 @@ function RightClickPage() {
         <div className="pagetitle">Extras</div>
         <div className="content">
           <p>
-            The Smooth Gestures Extras is additional software that you can install on your computer
-            to add new features and improve right-click compatibility.
+            The Smooth Gestures Extras is additional software that you can install on your computer to add new features
+            and improve right-click compatibility.
           </p>
           <p>&nbsp;</p>
           <div id="extras" className="setting">

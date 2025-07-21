@@ -1,41 +1,4 @@
-import { MOUSE_BUTTONS, MouseButton } from '@/constants';
-import { LineDirection, Point, RockerDirection, WheelDirection } from '@/types';
-
-export function isOverScrollbar(event: MouseEvent): boolean {
-  const { clientX, clientY } = event;
-  const docCW = document.documentElement.clientWidth;
-  const docCH = document.documentElement.clientHeight;
-
-  const scrollbarWidth = window.innerWidth - docCW;
-  const scrollbarHeight = window.innerHeight - docCH;
-
-  const overVerticalScrollbar = scrollbarWidth > 0 && clientX >= docCW;
-  const overHorizontalScrollbar = scrollbarHeight > 0 && clientY >= docCH;
-
-  return overVerticalScrollbar || overHorizontalScrollbar;
-}
-
-export function determineWheelDirection(deltaY: number): WheelDirection {
-  return deltaY < 0 ? 'U' : 'D';
-}
-
-const BUTTON_TO_ROCKER: Readonly<Record<MouseButton, RockerDirection>> = {
-  [MouseButton.Left]: 'L',
-  [MouseButton.Middle]: 'M',
-  [MouseButton.Right]: 'R',
-};
-
-export function getRockerDirections(
-  buttons: Record<MouseButton, boolean>,
-): [RockerDirection, RockerDirection] | null {
-  const pressedButtons = MOUSE_BUTTONS.filter((btn) => buttons[btn]);
-
-  if (pressedButtons.length !== 2) return null;
-  return [
-    BUTTON_TO_ROCKER[pressedButtons[0]],
-    BUTTON_TO_ROCKER[pressedButtons[1]],
-  ];
-}
+import { LineDirection, Point } from '@/types';
 
 const DIRECTION_RATIO = 2;
 
@@ -75,8 +38,7 @@ export function getContextMenuPosition(
   const pixelRatio = window.devicePixelRatio;
 
   const minScreenX = windowLeft + Math.round(pointerClientX * pixelRatio);
-  const minScreenY =
-    windowTop + LINUX_MENU_OFFSET + Math.round(pointerClientY * pixelRatio);
+  const minScreenY = windowTop + LINUX_MENU_OFFSET + Math.round(pointerClientY * pixelRatio);
 
   return {
     x: screenX < minScreenX ? screenX + windowLeft : screenX,

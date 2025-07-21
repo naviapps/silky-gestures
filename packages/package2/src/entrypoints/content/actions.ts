@@ -1,4 +1,4 @@
-import { ImageMessage, LinkMessage } from '@/types';
+import { LinkMessage } from '@/types';
 
 export const stop = (): void => {
   window.stop();
@@ -66,60 +66,6 @@ export const pagePrevious = (): void => {
   }
 };
 
-export const zoomImgIn = (images: ImageMessage[]): void => {
-  for (const image of images) {
-    const img = document.querySelector<HTMLImageElement>(`img[gestureid="${image.gestureid}"]`);
-    if (!img) {
-      continue;
-    }
-    if (!img.getAttribute('origsize')) {
-      img.setAttribute('origsize', `${img.clientWidth}x${img.clientHeight}`);
-    }
-    img.style.width = `${img.clientWidth * 1.2}px`;
-    img.style.height = `${img.clientHeight * 1.2}px`;
-  }
-};
-
-export const zoomImgOut = (images: ImageMessage[]): void => {
-  for (const image of images) {
-    const img = document.querySelector<HTMLImageElement>(`img[gestureid="${image.gestureid}"]`);
-    if (!img) {
-      continue;
-    }
-    if (!img.getAttribute('origsize')) {
-      img.setAttribute('origsize', `${img.clientWidth}x${img.clientHeight}`);
-    }
-    img.style.width = `${img.clientWidth / 1.2}px`;
-    img.style.height = `${img.clientHeight / 1.2}px`;
-  }
-};
-
-export const zoomImgZero = (images: ImageMessage[]): void => {
-  for (const image of images) {
-    const img = document.querySelector<HTMLImageElement>(`img[gestureid="${image.gestureid}"]`);
-    if (!img) {
-      continue;
-    }
-    const origsize = img.getAttribute('origsize');
-    if (!origsize) {
-      continue;
-    }
-    const size = origsize.split('x');
-    img.style.width = `${size[0]}px`;
-    img.style.height = `${size[1]}px`;
-  }
-};
-
-export const hideImage = (images: ImageMessage[]): void => {
-  for (const image of images) {
-    const img = document.querySelector<HTMLImageElement>(`img[gestureid="${image.gestureid}"]`);
-    if (!img) {
-      continue;
-    }
-    img.style.display = 'none';
-  }
-};
-
 export const showCookies = (): void => {
   globalThis.alert(
     `Cookies stored by this host or domain:\n${`\n${document.cookie}`
@@ -139,12 +85,4 @@ export const copy = async (selection: string): Promise<void> => {
 
 export const copyLink = async (links: LinkMessage[]): Promise<void> => {
   await navigator.clipboard.writeText(links[0].src);
-};
-
-export const findPrevious = async (selection: string): Promise<void> => {
-  // TODO
-};
-
-export const findNext = async (selection: string): Promise<void> => {
-  // TODO
 };

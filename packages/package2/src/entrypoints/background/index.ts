@@ -1,13 +1,8 @@
-import { delay } from 'es-toolkit';
-
 import createActions from '@/entrypoints/background/actions';
 import { onMessage } from '@/entrypoints/background/messaging';
-import { ChainGesture } from '@/entrypoints/content/messaging';
 import { settingsStore } from '@/stores/settings-store';
 
 export default defineBackground(() => {
-  let chainGesture: ChainGesture | undefined;
-
   settingsStore.subscribe(() => {
     //
   });
@@ -28,45 +23,14 @@ export default defineBackground(() => {
     }
 
     if (gesture && gestureMapping[gesture]) {
-      if (chainGesture) {
-        clearTimeout(chainGesture.timeout);
-      }
-      chainGesture = undefined;
-      if (gesture.startsWith('r')) {
-        chainGesture = {
-          rocker: true,
-          timeout: setTimeout(() => {
-            chainGesture = undefined;
-          }, 2000),
-        };
-      }
-
-      if (gesture.startsWith('w')) {
-        chainGesture = {
-          wheel: true,
-          timeout: setTimeout(() => {
-            chainGesture = undefined;
-          }, 2000),
-        };
-      }
-
-      if (chainGesture && data.buttonDown) {
-        chainGesture.buttonDown = data.buttonDown;
-      }
-
-      if (chainGesture && data.startPoint) {
-        chainGesture.startPoint = data.startPoint;
-      }
-
       const call = async () => {
-        if (!chainGesture) {
-          return;
-        }
-        const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+        const tabs = await browser.tabs.query({
+          active: true,
+          lastFocusedWindow: true,
+        });
         if (tabs.length === 0) {
           return;
         }
-        //await sendMessage('chain', chainGesture, tabs[0].id);
       };
 
       try {
@@ -83,22 +47,5 @@ export default defineBackground(() => {
         /* empty */
       }
     }
-  });
-
-  onMessage('syncButton', async ({ data, sender }) => {
-    if (!sender.tab?.id) {
-      return;
-    }
-    if (chainGesture) {
-      chainGesture.buttonDown ??= {};
-      chainGesture.buttonDown[data.id] = data.down;
-    }
-
-    await delay(20);
-    const tabs = await browser.tabs.query({ active: true, lastFocusedWindow: true });
-    if (tabs.length === 0) {
-      return;
-    }
-    //await sendMessage('syncButton', data, tabs[0].id);
   });
 });
